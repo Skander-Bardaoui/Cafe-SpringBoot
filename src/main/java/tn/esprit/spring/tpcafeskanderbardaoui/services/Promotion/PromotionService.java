@@ -2,96 +2,148 @@ package tn.esprit.spring.tpcafeskanderbardaoui.services.Promotion;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.PromotionDTO.PromotionRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.PromotionDTO.PromotionResponce;
-import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.Promotion;
 import tn.esprit.spring.tpcafeskanderbardaoui.mapper.IPromotionMapper;
-import tn.esprit.spring.tpcafeskanderbardaoui.repositories.ArticleRepository;
 import tn.esprit.spring.tpcafeskanderbardaoui.repositories.PromotionRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PromotionService implements IPromotionService {
 
-    private final PromotionRepository promoRepo;
-    private final IPromotionMapper promoMapper;
-    private final ArticleRepository articleRepo;
+    private final PromotionRepository promotionRepository;
+    private final IPromotionMapper promotionMapper;
 
-    // ✅ Add one promotion (DTO version)
+    // =============================
+    //        CRUD METHODS
+    // =============================
     @Override
     public PromotionResponce addPromotion(PromotionRequest request) {
-        Promotion promotion = promoMapper.toEntity(request);
-
-        // Attach related articles (if provided)
-        if (request.getArticleIds() != null && !request.getArticleIds().isEmpty()) {
-            List<Article> articles = articleRepo.findAllById(request.getArticleIds());
-            promotion.setArticles(articles);
-        }
-
-        Promotion saved = promoRepo.save(promotion);
-        return promoMapper.toResponse(saved);
+        Promotion promotion = promotionMapper.toEntity(request);
+        Promotion savedPromotion = promotionRepository.save(promotion);
+        return promotionMapper.toResponse(savedPromotion);
     }
 
-    // ✅ Add multiple promotions
     @Override
     public List<PromotionResponce> savePromotions(List<PromotionRequest> requests) {
         List<Promotion> promotions = requests.stream()
-                .map(dto -> {
-                    Promotion p = promoMapper.toEntity(dto);
-                    if (dto.getArticleIds() != null && !dto.getArticleIds().isEmpty()) {
-                        List<Article> articles = articleRepo.findAllById(dto.getArticleIds());
-                        p.setArticles(articles);
-                    }
-                    return p;
-                })
+                .map(promotionMapper::toEntity)
                 .collect(Collectors.toList());
-
-        return promoRepo.saveAll(promotions).stream()
-                .map(promoMapper::toResponse)
-                .collect(Collectors.toList());
+        List<Promotion> savedPromotions = promotionRepository.saveAll(promotions);
+        return promotionMapper.toResponseList(savedPromotions);
     }
 
-    // ✅ Get one promotion by ID
     @Override
     public PromotionResponce selectPromotionById(long id) {
-        Optional<Promotion> promotionOpt = promoRepo.findById(id);
-        return promotionOpt.map(promoMapper::toResponse).orElse(null);
+        Promotion promotion = promotionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + id));
+        return promotionMapper.toResponse(promotion);
     }
 
-    // ✅ Get all promotions
     @Override
     public List<PromotionResponce> selectAllPromotions() {
-        return promoRepo.findAll().stream()
-                .map(promoMapper::toResponse)
-                .collect(Collectors.toList());
+        List<Promotion> promotions = promotionRepository.findAll();
+        return promotionMapper.toResponseList(promotions);
     }
 
-    // ✅ Delete one promotion by ID
     @Override
     public void deletePromotionById(long id) {
-        promoRepo.deleteById(id);
+        promotionRepository.deleteById(id);
     }
 
-    // ✅ Delete all promotions
     @Override
     public void deleteAllPromotions() {
-        promoRepo.deleteAll();
+        promotionRepository.deleteAll();
     }
 
-    // ✅ Count promotions
     @Override
     public long countingPromotions() {
-        return promoRepo.count();
+        return promotionRepository.count();
     }
 
-    // ✅ Verify if promotion exists
     @Override
     public boolean verifPromotionById(long id) {
-        return promoRepo.existsById(id);
+        return promotionRepository.existsById(id);
+    }
+
+    // =============================
+    //        JPQL QUERY METHODS
+    // =============================
+    @Override
+    public List<PromotionResponce> findByPourcentageExact(Double pourcentage) {
+        return promotionMapper.toResponseList(promotionRepository.findByPourcentageExact(pourcentage));
+    }
+
+    @Override
+    public List<PromotionResponce> findByDateDebut(LocalDate date) {
+        return promotionMapper.toResponseList(promotionRepository.findByDateDebut(date));
+    }
+
+    @Override
+    public List<PromotionResponce> findByDateFin(LocalDate date) {
+        return promotionMapper.toResponseList(promotionRepository.findByDateFin(date));
+    }
+
+    @Override
+    public boolean existsByPourcentage(Double pourcentage) {
+        return promotionRepository.existsByPourcentage(pourcentage);
+    }
+
+    @Override
+    public long countByDateDebutAfter(LocalDate date) {
+        return promotionRepository.countByDateDebutAfter(date);
+    }
+
+    @Override
+    public List<PromotionResponce> findPromotionsActiveAt(LocalDate date) {
+        return promotionMapper.toResponseList(promotionRepository.findPromotionsActiveAt(date));
+    }
+
+    @Override
+    public List<PromotionResponce> findByPourcentageAndDateDebutBetween(Double pourcentage, LocalDate startDate, LocalDate endDate) {
+        return promotionMapper.toResponseList(promotionRepository.findByPourcentageAndDateDebutBetween(pourcentage, startDate, endDate));
+    }
+
+    @Override
+    public List<PromotionResponce> findPromotionsValidAt(LocalDate date) {
+        return promotionMapper.toResponseList(promotionRepository.findPromotionsValidAt(date));
+    }
+
+    @Override
+    public List<PromotionResponce> findByPourcentagesInOrderByDateDebut(List<Double> pourcentages) {
+        return promotionMapper.toResponseList(promotionRepository.findByPourcentagesInOrderByDateDebut(pourcentages));
+    }
+
+    @Override
+    public List<PromotionResponce> findActivePromotionsOrderByPourcentage() {
+        return promotionMapper.toResponseList(promotionRepository.findActivePromotionsOrderByPourcentage());
+    }
+
+    @Override
+    public List<PromotionResponce> findByDateFinIsNull() {
+        return promotionMapper.toResponseList(promotionRepository.findByDateFinIsNull());
+    }
+
+    @Override
+    public List<PromotionResponce> findByPourcentageIsNotNull() {
+        return promotionMapper.toResponseList(promotionRepository.findByPourcentageIsNotNull());
+    }
+
+    @Override
+    public List<PromotionResponce> findAllWithArticles() {
+        return promotionMapper.toResponseList(promotionRepository.findAllWithArticles());
+    }
+
+    @Override
+    public List<PromotionResponce> findExpiredPromotions() {
+        return promotionMapper.toResponseList(promotionRepository.findExpiredPromotions());
     }
 }

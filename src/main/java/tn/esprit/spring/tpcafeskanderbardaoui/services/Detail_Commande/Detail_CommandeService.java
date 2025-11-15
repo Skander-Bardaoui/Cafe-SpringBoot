@@ -19,7 +19,9 @@ public class Detail_CommandeService implements IDetail_CommandeService {
     private final DetailCommandeRepository detailRepo;
     private final IDetailCommandeMapper detailMapper;
 
-    // ✅ Add one detail commande
+    // ================================
+    //        CRUD METHODS
+    // ================================
     @Override
     public DetailCommandeResponce addDetailCommande(DetailCommandeRequest request) {
         Detail_Commande detail = detailMapper.toEntity(request);
@@ -27,7 +29,6 @@ public class Detail_CommandeService implements IDetail_CommandeService {
         return detailMapper.toResponse(saved);
     }
 
-    // ✅ Add multiple details commande
     @Override
     public List<DetailCommandeResponce> saveDetailsCommande(List<DetailCommandeRequest> requests) {
         List<Detail_Commande> details = requests.stream()
@@ -39,14 +40,12 @@ public class Detail_CommandeService implements IDetail_CommandeService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Get one detail commande by ID
     @Override
     public DetailCommandeResponce selectDetailCommandeById(long id) {
         Optional<Detail_Commande> detailOpt = detailRepo.findById(id);
         return detailOpt.map(detailMapper::toResponse).orElse(null);
     }
 
-    // ✅ Get all details commande
     @Override
     public List<DetailCommandeResponce> selectAllDetailsCommande() {
         return detailRepo.findAll().stream()
@@ -54,27 +53,99 @@ public class Detail_CommandeService implements IDetail_CommandeService {
                 .collect(Collectors.toList());
     }
 
-    // ✅ Delete one detail commande by ID
     @Override
     public void deleteDetailCommandeById(long id) {
-        detailRepo.deleteById(id);
+        if (detailRepo.existsById(id)) {
+            detailRepo.deleteById(id);
+        }
     }
 
-    // ✅ Delete all details commande
     @Override
     public void deleteAllDetailsCommande() {
         detailRepo.deleteAll();
     }
 
-    // ✅ Count total details commande
     @Override
     public long countingDetailsCommande() {
         return detailRepo.count();
     }
 
-    // ✅ Verify if a detail commande exists
     @Override
     public boolean verifDetailCommandeById(long id) {
         return detailRepo.existsById(id);
+    }
+
+    // ================================
+    //        JPQL QUERY METHODS
+    // ================================
+
+    @Override
+    public List<DetailCommandeResponce> findByQuantiteExact(Integer quantite) {
+        return detailRepo.findByQuantiteArticle(quantite).stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findBySousTotalExact(Double sousTotal) {
+        return detailRepo.findBySousTotalDetailArticle(sousTotal).stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public long countByQuantiteGreaterThan(Integer quantite) {
+        return detailRepo.countByQuantiteArticleGreaterThan(quantite);
+    }
+
+    @Override
+    public boolean existsBySousTotalGreaterThan(Double montant) {
+        return detailRepo.existsBySousTotalDetailArticleGreaterThan(montant);
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findByQuantiteBetweenAndSousTotalMin(Integer minQte, Integer maxQte, Double minSousTotal) {
+        return detailRepo.findByQuantiteBetweenAndSousTotalMin(minQte, maxQte, minSousTotal).stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findBySousTotalBetweenOrderByQuantite(Double minSousTotal, Double maxSousTotal) {
+        return detailRepo.findBySousTotalBetweenOrderByQuantite(minSousTotal, maxSousTotal).stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findBySousTotalApresPromoBetween(Double min, Double max) {
+        return detailRepo.findBySousTotalDetailArticleApresPromoBetween(min, max).stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findByQuantiteOrSousTotalMin(Integer quantite, Double minSousTotal) {
+        return detailRepo.findByQuantiteOrSousTotalMin(quantite, minSousTotal).stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findTop5BySousTotalDesc() {
+        return detailRepo.findTop5ByOrderBySousTotalDetailArticleDesc().stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findByQuantiteIsNull() {
+        return detailRepo.findByQuantiteArticleIsNull().stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findBySousTotalApresPromoIsNotNull() {
+        return detailRepo.findBySousTotalDetailArticleApresPromoIsNotNull().stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DetailCommandeResponce> findAllWithCommandeAndArticle() {
+        return detailRepo.findAllWithCommandeAndArticle().stream()
+                .map(detailMapper::toResponse).collect(Collectors.toList());
     }
 }

@@ -11,4 +11,5 @@ import tn.esprit.spring.tpcafeskanderbardaoui.entities.TypeArticle;
 public class ArticleRequest {
     private String nomArticle;
     private Double prixArticle;
+    private TypeArticle typeArticle;
 }

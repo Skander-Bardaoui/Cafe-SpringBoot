@@ -8,76 +8,161 @@ import tn.esprit.spring.tpcafeskanderbardaoui.entities.CarteFidelite;
 import tn.esprit.spring.tpcafeskanderbardaoui.mapper.ICarteFideliteMapper;
 import tn.esprit.spring.tpcafeskanderbardaoui.repositories.CarteFideliteRepository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CarteFideliteService implements ICarteFideliteService {
 
-    private final CarteFideliteRepository carteRepo;
-    private final ICarteFideliteMapper carteMapper;
+    private final CarteFideliteRepository carteFideliteRepo;
+    private final ICarteFideliteMapper carteFideliteMapper;
 
-    // ✅ Add one CarteFidelite (DTO-based)
+    // =============================
+    //        CRUD METHODS
+    // =============================
+
     @Override
     public CarteFideliteResponce addCarteFidelite(CarteFideliteRequest request) {
-        CarteFidelite carte = carteMapper.toEntity(request);
-        CarteFidelite saved = carteRepo.save(carte);
-        return carteMapper.toResponse(saved);
+        CarteFidelite carteFidelite = carteFideliteMapper.toEntity(request);
+        CarteFidelite saved = carteFideliteRepo.save(carteFidelite);
+        return carteFideliteMapper.toResponse(saved);
     }
 
-    // ✅ Add multiple CarteFidelite (DTO-based)
     @Override
-    public List<CarteFideliteResponce> saveCartesFidelite(List<CarteFideliteRequest> requests) {
-        List<CarteFidelite> cartes = requests.stream()
-                .map(carteMapper::toEntity)
+    public List<CarteFideliteResponce> saveCarteFidelites(List<CarteFideliteRequest> requests) {
+        List<CarteFidelite> carteFidelites = requests.stream()
+                .map(carteFideliteMapper::toEntity)
                 .collect(Collectors.toList());
-        return carteRepo.saveAll(cartes).stream()
-                .map(carteMapper::toResponse)
+        return carteFideliteRepo.saveAll(carteFidelites).stream()
+                .map(carteFideliteMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    // ✅ Get CarteFidelite by ID
     @Override
     public CarteFideliteResponce selectCarteFideliteById(long id) {
-        return carteRepo.findById(id)
-                .map(carteMapper::toResponse)
-                .orElseGet(() -> CarteFideliteResponce.builder()
-                        .idCarteFidelite(0L)
-                        .pointsAcumules(0)
-                        .dateCreation(null)
-                        .build());
+        Optional<CarteFidelite> carteFidelite = carteFideliteRepo.findById(id);
+        return carteFidelite.map(carteFideliteMapper::toResponse).orElse(null);
     }
 
-    // ✅ Get all CarteFidelite
     @Override
-    public List<CarteFideliteResponce> selectAllCartesFidelite() {
-        return carteRepo.findAll().stream()
-                .map(carteMapper::toResponse)
+    public List<CarteFideliteResponce> selectAllCarteFidelites() {
+        return carteFideliteRepo.findAll().stream()
+                .map(carteFideliteMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    // ✅ Delete one CarteFidelite by ID
     @Override
-    public void deleteCarteFidelite(long id) {
-        carteRepo.deleteById(id);
+    public void deleteCarteFideliteById(long id) {
+        carteFideliteRepo.deleteById(id);
     }
 
-    // ✅ Delete all CarteFidelite
     @Override
-    public void deleteAllCartesFidelite() {
-        carteRepo.deleteAll();
+    public void deleteAllCarteFidelites() {
+        carteFideliteRepo.deleteAll();
     }
 
-    // ✅ Count CarteFidelite
     @Override
-    public long countingCartesFidelite() {
-        return carteRepo.count();
+    public long countingCarteFidelites() {
+        return carteFideliteRepo.count();
     }
 
-    // ✅ Verify existence by ID
     @Override
     public boolean verifCarteFideliteById(long id) {
-        return carteRepo.existsById(id);
+        return carteFideliteRepo.existsById(id);
+    }
+
+    // =============================
+    //    JPQL QUERY METHODS
+    // =============================
+
+    @Override
+    public List<CarteFideliteResponce> findByPointsExact(Integer points) {
+        return carteFideliteRepo.findByPointsExact(points).stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByDateCreation(LocalDate date) {
+        return carteFideliteRepo.findByDateCreation(date).stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countByPointsGreaterThan(Integer points) {
+        return carteFideliteRepo.countByPointsGreaterThan(points);
+    }
+
+    @Override
+    public int deleteByDateCreationBefore(LocalDate date) {
+        return carteFideliteRepo.deleteByDateCreationBefore(date);
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByPointsInRangeAndDateAfter(Integer minPoints, Integer maxPoints, LocalDate date) {
+        return carteFideliteRepo.findByPointsInRangeAndDateAfter(minPoints, maxPoints, date).stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByPointsGreaterThanEqualOrderByDateCreation(Integer minPoints) {
+        return carteFideliteRepo.findByPointsGreaterThanEqualOrderByDateCreation(minPoints).stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByDateCreationBetween(LocalDate startDate, LocalDate endDate) {
+        return carteFideliteRepo.findByDateCreationBetween(startDate, endDate).stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByLowPointsOrDateBefore(Integer maxPoints, LocalDate date) {
+        return carteFideliteRepo.findByLowPointsOrDateBefore(maxPoints, date).stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CarteFideliteResponce findCardWithMaxPoints() {
+        Optional<CarteFidelite> carteFidelite = carteFideliteRepo.findCardWithMaxPoints();
+        return carteFidelite.map(carteFideliteMapper::toResponse).orElse(null);
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByDateCreationIsNull() {
+        return carteFideliteRepo.findByDateCreationIsNull().stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByPointsIsNotNull() {
+        return carteFideliteRepo.findByPointsIsNotNull().stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findByClientNomAndPrenom(String nom, String prenom) {
+        return carteFideliteRepo.findByClientNomAndPrenom(nom, prenom).stream()
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CarteFideliteResponce> findTop5ByOrderByPointsDesc() {
+        List<CarteFidelite> top5 = carteFideliteRepo.findTop5ByOrderByPointsDesc();
+        return top5.stream()
+                .limit(5)
+                .map(carteFideliteMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

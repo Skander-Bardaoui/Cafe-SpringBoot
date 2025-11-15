@@ -4,7 +4,6 @@ import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseResponse;
 
 import java.util.List;
-
 public interface IAdresseService {
 
     AdresseResponse addAdresse(AdresseRequest request);
@@ -22,4 +21,43 @@ public interface IAdresseService {
     long countingAdresses();
 
     boolean verifAdresseById(long id);
+
+
+    // ======================
+    //      JPQL QUERIES
+    // ======================
+
+    List<AdresseResponse> findByVille(String ville);
+
+    List<AdresseResponse> findByCodePostal(int codePostal);
+
+    long countByVille(String ville);
+
+    void deleteByVille(String ville);
+
+    List<AdresseResponse> findByVilleAndCodePostal(String ville, int codePostal);
+
+    List<AdresseResponse> findByRueContainingIgnoreCase(String word);
+
+    List<AdresseResponse> findByVilleIn(List<String> villes);
+
+    List<AdresseResponse> findByCodePostalBetween(int min, int max);
+
+    List<AdresseResponse> findByCodePostalGreaterThan(int cp);
+
+    List<AdresseResponse> findByCodePostalGreaterThanOrEqual(int cp);
+
+    List<AdresseResponse> findByCodePostalLessThan(int cp);
+
+    List<AdresseResponse> findByCodePostalLessThanOrEqual(int cp);
+
+    List<AdresseResponse> findByRueStartingWithAndVilleOrderByCodePostal(String prefix, String ville);
+
+    List<AdresseResponse> findByRueStartingWith(String prefix);
+
+    List<AdresseResponse> findByVilleEndingWith(String suffix);
+
+    List<AdresseResponse> findByRueIsNull();
+
+    List<AdresseResponse> findByVilleIsNotNull();
 }

@@ -9,5 +9,6 @@ import lombok.*;
 @Builder
 public class AdresseRequest {
     private String rue;
+    private String ville;
 
 }

@@ -1,6 +1,7 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.dto.DetailCommandeDTO;
 
 import lombok.*;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Commande;
 
 @Getter
 @Setter
@@ -14,4 +15,5 @@ public class DetailCommandeResponce {
     private Double sousTotalDetailArticleApresPromo;
 
     private Long articleId; // instead of full Article object
+    private Long commandeId;
 }

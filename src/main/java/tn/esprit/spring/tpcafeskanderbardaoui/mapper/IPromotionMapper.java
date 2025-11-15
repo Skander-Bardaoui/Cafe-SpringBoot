@@ -30,6 +30,7 @@ public interface IPromotionMapper {
 
     @Named("mapIdsToArticles")
     default List<Article> mapIdsToArticles(List<Long> ids) {
+        // ONLY create Article references with ID; Hibernate must manage them
         if (ids == null) return null;
         return ids.stream().map(id -> {
             Article a = new Article();
