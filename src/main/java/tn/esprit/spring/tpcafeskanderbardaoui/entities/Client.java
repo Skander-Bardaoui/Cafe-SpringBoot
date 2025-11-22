@@ -26,15 +26,16 @@ public class Client {
 
     private LocalDate dateNaissance;
 
-
-
-    @OneToOne
+    // Adresse association
+    @ManyToOne
     @JoinColumn(name = "adresse_id")
     private Adresse adresse;
 
-    @OneToOne(mappedBy = "client")
+    // CarteFidelite association with cascade
+    @OneToOne(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private CarteFidelite carteFidelite;
 
-    @OneToMany(mappedBy = "client")
+    // Commandes association
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Commande> commandes;
 }

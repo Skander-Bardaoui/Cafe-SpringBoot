@@ -5,10 +5,13 @@ import org.springframework.stereotype.Service;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleResponse;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Promotion;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.TypeArticle;
 import tn.esprit.spring.tpcafeskanderbardaoui.mapper.IArticleMapper;
 import tn.esprit.spring.tpcafeskanderbardaoui.repositories.ArticleRepository;
+import tn.esprit.spring.tpcafeskanderbardaoui.repositories.PromotionRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +22,8 @@ public class ArticleService implements IArticleService {
 
     private final ArticleRepository articleRepo;
     private final IArticleMapper articleMapper;
+    private final PromotionRepository promotionRepository;  // ✅ Add this
+
 
     // =============================
     //        CRUD METHODS
@@ -184,5 +189,32 @@ public class ArticleService implements IArticleService {
         return articleRepo.findByNomContainingAndPrixBetween(nom, minPrix, maxPrix).stream()
                 .map(articleMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+
+
+    @Override
+    public ArticleResponse ajouterArticleEtPromotions(ArticleRequest request) {
+        Article article = articleMapper.toEntity(request);
+
+        // ✅ Use lowercase 'promotionRepository' - the injected instance
+        if (request.getPromotionIds() != null && !request.getPromotionIds().isEmpty()) {
+            List<Promotion> promotions = promotionRepository.findAllById(request.getPromotionIds());
+
+            if (promotions.size() != request.getPromotionIds().size()) {
+                throw new RuntimeException("One or more promotions not found");
+            }
+
+            article.setPromotions(promotions);
+            for (Promotion promotion : promotions) {
+                if (promotion.getArticles() == null) {
+                    promotion.setArticles(new ArrayList<>());
+                }
+                promotion.getArticles().add(article);
+            }
+        }
+
+        Article savedArticle = articleRepo.save(article);
+        return articleMapper.toResponse(savedArticle);
     }
 }

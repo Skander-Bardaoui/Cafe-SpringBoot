@@ -14,5 +14,4 @@ public class PromotionResponce {
     private Double pourcentagePromo;
     private LocalDate dateDebutPromo;
     private LocalDate dateFinPromo;
-    private List<Long> articleIds;
 }

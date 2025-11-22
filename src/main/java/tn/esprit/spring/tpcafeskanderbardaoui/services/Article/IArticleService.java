@@ -2,6 +2,7 @@ package tn.esprit.spring.tpcafeskanderbardaoui.services.Article;
 
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleResponse;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.TypeArticle;
 
 import java.util.List;
@@ -78,4 +79,7 @@ public interface IArticleService {
 
     // 16. Trouver les articles avec nom contenant une chaine et prix dans une plage
     List<ArticleResponse> findByNomContainingAndPrixBetween(String nom, Double minPrix, Double maxPrix);
+
+    ArticleResponse ajouterArticleEtPromotions(ArticleRequest request);
+
 }

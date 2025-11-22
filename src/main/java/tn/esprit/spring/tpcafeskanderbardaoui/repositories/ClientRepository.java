@@ -101,4 +101,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
             "JOIN c.commandes cmd JOIN cmd.detailsCommande d JOIN d.article a " +
             "WHERE LOWER(c.nom) LIKE LOWER(CONCAT('%', :nomStr, '%')) AND a.typeArticle = :typeArticle")
     List<Client> findByNomContainingAndArticleType(@Param("nomStr") String nomStr, @Param("typeArticle") String typeArticle);
+    // 3b. Trouver TOUS les clients par nom et prénom (NOUVELLE MÉTHODE)
+    @Query("SELECT c FROM Client c WHERE c.nom = :nom AND c.prenom = :prenom")
+    List<Client> findAllByNomAndPrenom(@Param("nom") String nom, @Param("prenom") String prenom);
+
 }

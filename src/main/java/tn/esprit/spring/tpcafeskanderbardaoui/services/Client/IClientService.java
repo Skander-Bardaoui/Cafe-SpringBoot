@@ -2,6 +2,7 @@ package tn.esprit.spring.tpcafeskanderbardaoui.services.Client;
 
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO.ClientRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO.ClientResponce;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,7 +36,8 @@ public interface IClientService {
 
     List<ClientResponce> findClientsByPrenom(String prenom);
 
-    ClientResponce findClientByNomAndPrenom(String nom, String prenom);
+    // ✅ This should return List, NOT single ClientResponce
+    List<ClientResponce> findClientsByNomAndPrenom(String nom, String prenom);
 
     boolean existsClientByNom(String nom);
 
@@ -74,4 +76,23 @@ public interface IClientService {
     List<ClientResponce> findClientsByCommandeArticleNom(String nomArticle);
 
     List<ClientResponce> findClientsByNomContainingAndArticleType(String nomStr, String typeArticle);
+
+    // ===============================================
+    //       AFFECTATION METHODS
+    // ===============================================
+    String affecterAdresseAClient(String rue, long idClient);
+
+    void affecterCarteAClient(long idCarte, long idClient);
+
+    void affecterCommandeAClient(long idCommande, long idClient);
+
+    void affecterCommandeAClient(LocalDate dateCommande, String nomClient, String prenomClient);
+
+    void desaffecterClientDeCommande(long idCommande);
+
+    // ===============================================
+    //            CASCADE METHODS
+    // ===============================================
+    ClientResponce ajouterClientEtCarteFidelite(ClientRequest request);
+
 }

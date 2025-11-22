@@ -3,6 +3,8 @@ package tn.esprit.spring.tpcafeskanderbardaoui.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "adresse")
 @Getter
@@ -25,6 +27,6 @@ public class Adresse {
     private int codePostal;
 
 
-    @OneToOne(mappedBy = "adresse")
-    private Client client;
+    @OneToMany(mappedBy = "adresse")
+    private List<Client> clients;
 }

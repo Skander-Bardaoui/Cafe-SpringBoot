@@ -4,6 +4,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.TypeArticle;
+import tn.esprit.spring.tpcafeskanderbardaoui.dto.PromotionDTO.PromotionResponce;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,5 +18,8 @@ public class ArticleResponse {
     private String nomArticle;
     private Double prixArticle;
     private TypeArticle typeArticle;
+
+    private List<PromotionResponce> promotions;  // ✅ Add this field
+
 
 }

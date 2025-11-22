@@ -1,7 +1,7 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO;
 
 import lombok.*;
-import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseRequest;
+import tn.esprit.spring.tpcafeskanderbardaoui.dto.CarteFideliteDTO.CarteFideliteRequest;
 
 import java.time.LocalDate;
 
@@ -15,5 +15,6 @@ public class ClientResponce {
     private String nom;
     private String prenom;
     private LocalDate dateNaissance;
-
+    private Integer ptsAccumules;
+    private CarteFideliteRequest carteFidelite;  // ✅ Use DTO instead of entity
 }

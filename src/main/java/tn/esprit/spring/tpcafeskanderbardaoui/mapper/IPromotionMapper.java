@@ -17,7 +17,6 @@ public interface IPromotionMapper {
     @Mapping(target = "articles", source = "articleIds", qualifiedByName = "mapIdsToArticles")
     Promotion toEntity(PromotionRequest request);
 
-    @Mapping(target = "articleIds", source = "articles", qualifiedByName = "mapArticlesToIds")
     PromotionResponce toResponse(Promotion promotion);
 
     List<PromotionResponce> toResponseList(List<Promotion> promotions);

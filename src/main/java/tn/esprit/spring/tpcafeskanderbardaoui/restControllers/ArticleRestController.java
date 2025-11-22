@@ -1,6 +1,8 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.restControllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleResponse;
@@ -178,5 +180,10 @@ public class ArticleRestController {
             @RequestParam Double minPrix,
             @RequestParam Double maxPrix) {
         return articleService.findByNomContainingAndPrixBetween(nom, minPrix, maxPrix);
+    }
+    @PostMapping("/with-promotions")
+    public ResponseEntity<ArticleResponse> ajouterArticleEtPromotions(@RequestBody ArticleRequest request) {
+        ArticleResponse response = articleService.ajouterArticleEtPromotions(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
