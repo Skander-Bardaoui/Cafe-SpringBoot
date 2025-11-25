@@ -82,4 +82,8 @@ public interface IArticleService {
 
     ArticleResponse ajouterArticleEtPromotions(ArticleRequest request);
 
+    void affecterPromotionAArticle(long idArticle, long idPromo);
+    void desaffecterPromotionDUnArticle(long idArticle, long idPromo);
+
+
 }

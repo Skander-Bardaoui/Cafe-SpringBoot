@@ -226,18 +226,18 @@ public class ClientRestController {
         }
     }
 
-        @PostMapping("/affecter-commande-by-date")
-        public ResponseEntity<String> affecterCommandeByDate(
-                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateCommande,
-                @RequestParam String nom,
-                @RequestParam String prenom) {
-            try {
-                clientService.affecterCommandeAClient(dateCommande, nom, prenom);
-                return ResponseEntity.ok("Commandes du " + dateCommande + " affectées au client " + nom + " " + prenom);
-            } catch (RuntimeException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
+    @PostMapping("/affecter-commande-by-date")
+    public ResponseEntity<String> affecterCommandeByDate(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateCommande,
+            @RequestParam String nom,
+            @RequestParam String prenom) {
+        try {
+            clientService.affecterCommandeAClient(dateCommande, nom, prenom);
+            return ResponseEntity.ok("Commandes du " + dateCommande + " affectées au client " + nom + " " + prenom);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
     @PostMapping("/desaffecter-commande/{idCommande}")
     public ResponseEntity<String> desaffecterCommande(@PathVariable long idCommande) {
@@ -256,6 +256,19 @@ public class ClientRestController {
         try {
             clientService.affecterCarteAClient(idCarte, idClient);
             return ResponseEntity.ok("Carte fidélité affectée au client avec succès");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/add-and-affect-commande")
+    public ResponseEntity<String> ajouteCommandeEtAffecterAClient(
+            @RequestBody tn.esprit.spring.tpcafeskanderbardaoui.entities.Commande commande,
+            @RequestParam String nomClient,
+            @RequestParam String prenomClient) {
+        try {
+            clientService.ajouteCommandeEtAffecterAClient(commande, nomClient, prenomClient);
+            return ResponseEntity.ok("Commande ajoutée et affectée au client " + nomClient + " " + prenomClient + " avec succès.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

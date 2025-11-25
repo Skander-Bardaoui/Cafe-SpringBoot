@@ -32,6 +32,12 @@ public class Article {
     private List<Detail_Commande> detailsCommande;
 
     // Relation avec Promotion (many-to-many)
-    @ManyToMany(mappedBy = "articles", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "article_promotion",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "promotion_id")
+    )
     private List<Promotion> promotions;
+
 }

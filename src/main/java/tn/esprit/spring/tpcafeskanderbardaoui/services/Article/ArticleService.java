@@ -22,7 +22,7 @@ public class ArticleService implements IArticleService {
 
     private final ArticleRepository articleRepo;
     private final IArticleMapper articleMapper;
-    private final PromotionRepository promotionRepository;  // ✅ Add this
+    private final PromotionRepository promotionRepository;
 
 
     // =============================
@@ -216,5 +216,23 @@ public class ArticleService implements IArticleService {
 
         Article savedArticle = articleRepo.save(article);
         return articleMapper.toResponse(savedArticle);
+    }
+
+
+    @Override
+    public void affecterPromotionAArticle(long idArticle, long idPromo) {
+        Promotion promotion = promotionRepository.findById(idPromo).get();
+        Article article = articleRepo.findById(idArticle).get();
+        article.getPromotions().add(promotion);
+        articleRepo.save(article);
+    }
+
+    @Override
+    public void desaffecterPromotionDUnArticle(long idArticle, long idPromo) {
+        Article article = articleRepo.findById(idArticle).get();
+        Promotion promotion = promotionRepository.findById(idPromo).get();
+        article.getPromotions().remove(promotion);
+        articleRepo.save(article);
+
     }
 }

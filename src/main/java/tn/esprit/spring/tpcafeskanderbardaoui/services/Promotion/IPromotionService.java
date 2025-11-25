@@ -72,4 +72,8 @@ public interface IPromotionService {
 
     // 14. Trouver les promotions expirées
     List<PromotionResponce> findExpiredPromotions();
+
+
+    void ajouterPromoEtAffecterAArticle(PromotionRequest request, long idArticle);
+
 }

@@ -27,11 +27,7 @@ public class Promotion {
     private LocalDate dateFinPromo;
 
     // Relation ManyToMany avec Article
-    @ManyToMany
-    @JoinTable(
-            name = "promotion_article",
-            joinColumns = @JoinColumn(name = "promotion_id"),
-            inverseJoinColumns = @JoinColumn(name = "article_id")
-    )
+    @ManyToMany(mappedBy = "promotions")
     private List<Article> articles;
+
 }

@@ -186,4 +186,20 @@ public class ArticleRestController {
         ArticleResponse response = articleService.ajouterArticleEtPromotions(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PostMapping("/affecter-promo/{idArticle}/{idPromo}")
+    public ResponseEntity<String> affecterPromotionAArticle(
+            @PathVariable Long idArticle,
+            @PathVariable Long idPromo) {
+        articleService.affecterPromotionAArticle(idArticle, idPromo);
+        return ResponseEntity.ok("Promotion affectée à l'article avec succès");
+    }
+
+    @DeleteMapping("/desaffecter-promo/{idArticle}/{idPromo}")
+    public ResponseEntity<String> desaffecterPromotionDUnArticle(
+            @PathVariable Long idArticle,
+            @PathVariable Long idPromo) {
+        articleService.desaffecterPromotionDUnArticle(idArticle, idPromo);
+        return ResponseEntity.ok("Promotion désaffectée de l'article avec succès");
+    }
 }

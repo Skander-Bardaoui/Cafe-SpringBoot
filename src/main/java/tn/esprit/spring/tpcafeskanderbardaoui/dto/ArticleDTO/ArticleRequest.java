@@ -15,6 +15,6 @@ public class ArticleRequest {
     private String nomArticle;
     private Double prixArticle;
     private TypeArticle typeArticle;
-    private List<Long> promotionIds;  // ✅ Just IDs, not full objects
+    private List<Long> promotionIds;
 
 }

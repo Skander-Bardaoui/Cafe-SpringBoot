@@ -1,5 +1,6 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.repositories;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +25,7 @@ public interface AdresseRepository extends JpaRepository<Adresse, Long> {
 
     // 4. Supprimer toutes les adresses d'une ville
     @Modifying
+    @Transactional
     @Query("DELETE FROM Adresse a WHERE a.ville = :ville")
     void deleteByVille(@Param("ville") String ville);
 

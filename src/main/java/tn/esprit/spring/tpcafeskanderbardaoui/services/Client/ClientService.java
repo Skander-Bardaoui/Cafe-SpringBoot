@@ -335,6 +335,19 @@ public class ClientService implements IClientService {
     }
 
 
+    @Override
+    public void ajouteCommandeEtAffecterAClient(Commande commande, String nomClient, String prenomClient) {
+        // 1️⃣ Find the client by nom and prenom
+        List<Client> clients = clientRepo.findAllByNomAndPrenom(nomClient, prenomClient);
+        if (clients.isEmpty()) {
+            throw new RuntimeException("Client not found with nom: " + nomClient + " and prenom: " + prenomClient);
+        }
+        Client client = clients.get(0);
+        // 2️⃣ Attach the commande to the client
+        commande.setClient(client);
+        // 3️⃣ Save the commande
+        commandeRepository.save(commande);
+    }
 
 
 }

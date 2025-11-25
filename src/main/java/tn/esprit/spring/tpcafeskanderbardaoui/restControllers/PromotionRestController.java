@@ -7,9 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.PromotionDTO.PromotionRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.PromotionDTO.PromotionResponce;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Promotion;
+import tn.esprit.spring.tpcafeskanderbardaoui.mapper.IPromotionMapper;
 import tn.esprit.spring.tpcafeskanderbardaoui.services.Promotion.IPromotionService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,6 +21,7 @@ import java.util.List;
 public class PromotionRestController {
 
     private final IPromotionService promotionService;
+    private final IPromotionMapper promotionMapper;
 
     // =============================
     //        CRUD ENDPOINTS
@@ -166,5 +170,18 @@ public class PromotionRestController {
     @GetMapping("/search/expired")
     public ResponseEntity<List<PromotionResponce>> findExpiredPromotions() {
         return ResponseEntity.ok(promotionService.findExpiredPromotions());
+    }
+
+    // =============================
+    //    NEW METHOD: Add & Attach
+    // =============================
+    @PostMapping("/add-and-attach/{idArticle}")
+    public ResponseEntity<String> createAndAttachPromotion(
+            @RequestBody PromotionRequest request,
+            @PathVariable long idArticle) {
+        Promotion promotion = promotionMapper.toEntity(request);
+        promotionService.ajouterPromoEtAffecterAArticle(request, idArticle);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Promotion created and attached to article with ID " + idArticle);
     }
 }

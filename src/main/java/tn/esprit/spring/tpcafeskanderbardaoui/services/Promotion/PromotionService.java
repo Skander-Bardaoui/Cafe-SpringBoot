@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.PromotionDTO.PromotionRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.PromotionDTO.PromotionResponce;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.Promotion;
 import tn.esprit.spring.tpcafeskanderbardaoui.mapper.IPromotionMapper;
+import tn.esprit.spring.tpcafeskanderbardaoui.repositories.ArticleRepository;
 import tn.esprit.spring.tpcafeskanderbardaoui.repositories.PromotionRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +24,8 @@ public class PromotionService implements IPromotionService {
 
     private final PromotionRepository promotionRepository;
     private final IPromotionMapper promotionMapper;
+    private final ArticleRepository articleRepository;
+
 
     // =============================
     //        CRUD METHODS
@@ -146,4 +151,19 @@ public class PromotionService implements IPromotionService {
     public List<PromotionResponce> findExpiredPromotions() {
         return promotionMapper.toResponseList(promotionRepository.findExpiredPromotions());
     }
+
+
+    @Override
+    public void ajouterPromoEtAffecterAArticle(PromotionRequest request, long idArticle) {
+        Promotion promotion = promotionMapper.toEntity(request);
+        Promotion savedPromotion = promotionRepository.save(promotion);
+        Article article = articleRepository.findById(idArticle)
+                .orElseThrow(() -> new RuntimeException("Article not found"));
+        if (article.getPromotions() == null) {
+            article.setPromotions(new ArrayList<>());
+        }
+        article.getPromotions().add(savedPromotion);
+        articleRepository.save(article);
+    }
+
 }
