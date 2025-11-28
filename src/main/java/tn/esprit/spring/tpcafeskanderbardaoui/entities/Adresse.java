@@ -1,5 +1,6 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +28,7 @@ public class Adresse {
     private int codePostal;
 
 
-    @OneToMany(mappedBy = "adresse")
-    private List<Client> clients;
+    @OneToOne(mappedBy = "adresse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private Client clients;
 }

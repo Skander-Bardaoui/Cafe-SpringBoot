@@ -2,6 +2,8 @@ package tn.esprit.spring.tpcafeskanderbardaoui.services.Adresse;
 
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseResponse;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Adresse;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Client;
 
 import java.util.List;
 public interface IAdresseService {
@@ -60,4 +62,7 @@ public interface IAdresseService {
     List<AdresseResponse> findByRueIsNull();
 
     List<AdresseResponse> findByVilleIsNotNull();
+
+    Client ajouterClientEtAdresse(Client client, Adresse adresse);
+
 }

@@ -1,5 +1,6 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.services.Article;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleRequest;
@@ -17,12 +18,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ArticleService implements IArticleService {
 
     private final ArticleRepository articleRepo;
     private final IArticleMapper articleMapper;
     private final PromotionRepository promotionRepository;
+
 
 
     // =============================
@@ -235,4 +238,48 @@ public class ArticleService implements IArticleService {
         articleRepo.save(article);
 
     }
+    @Override
+    public Article ajouterArticleEtPromotions(Article article) {
+
+        if (article.getPromotions() != null && !article.getPromotions().isEmpty()) {
+            // Sauvegarder d'abord les promotions
+            List<Promotion> savedPromotions = new ArrayList<>();
+
+            for (Promotion promo : article.getPromotions()) {
+                Promotion savedPromo = promotionRepository.save(promo);
+                savedPromotions.add(savedPromo);
+            }
+
+            // Associer les promotions sauvegardées à l'article
+            article.setPromotions(savedPromotions);
+        }
+
+        // Sauvegarder l'article avec les promotions
+        return articleRepo.save(article);
+    }
+
+
+    @Transactional
+    @Override
+    public void deleteArticleAndPromotions(Long idArticle) {
+
+        Article article = articleRepo.findById(idArticle)
+                .orElseThrow(() -> new RuntimeException("Article introuvable"));
+
+        if (article.getPromotions() != null) {
+            article.getPromotions().forEach(promo -> {
+                promo.getArticles().remove(article); // couper la relation
+
+                // si tu veux supprimer la promotion complètement :
+                if (promo.getArticles().isEmpty()) {
+                    promotionRepository.delete(promo);
+                }
+            });
+
+            article.getPromotions().clear();
+        }
+
+        articleRepo.delete(article);
+    }
+
 }

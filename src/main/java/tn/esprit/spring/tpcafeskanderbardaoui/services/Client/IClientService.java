@@ -3,6 +3,7 @@ package tn.esprit.spring.tpcafeskanderbardaoui.services.Client;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO.ClientRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO.ClientResponce;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Client;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.Commande;
 
 import java.time.LocalDate;
@@ -97,6 +98,9 @@ public interface IClientService {
     ClientResponce ajouterClientEtCarteFidelite(ClientRequest request);
 
     void ajouteCommandeEtAffecterAClient(Commande commande, String nomClient, String prenomClient);
+
+    void deleteClientAndCard(Long idClient);
+
 
 
 }

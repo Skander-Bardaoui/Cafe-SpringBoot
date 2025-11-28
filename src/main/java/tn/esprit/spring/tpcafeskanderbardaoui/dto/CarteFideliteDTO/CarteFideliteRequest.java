@@ -11,4 +11,5 @@ import java.time.LocalDate;
 public class CarteFideliteRequest {
     private Integer pointsAcumules;
     private LocalDate dateCreation;
+
 }

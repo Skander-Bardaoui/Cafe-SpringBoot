@@ -1,9 +1,11 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.restControllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseResponse;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Client;
 import tn.esprit.spring.tpcafeskanderbardaoui.services.Adresse.IAdresseService;
 
 import java.util.List;
@@ -151,4 +153,15 @@ public class AdresseRestController {
     public List<AdresseResponse> findByVilleIsNotNull() {
         return adresseService.findByVilleIsNotNull();
     }
+
+    @PostMapping("/add-client-with-adresse")
+    public ResponseEntity<Client> addClientWithAdresse(@RequestBody Client client) {
+        Client savedClient = adresseService.ajouterClientEtAdresse(
+                client, client.getAdresse());
+        return ResponseEntity.ok(savedClient);
+    }
+
 }
+
+
+

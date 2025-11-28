@@ -5,9 +5,12 @@ import org.springframework.stereotype.Service;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseResponse;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.Adresse;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Client;
 import tn.esprit.spring.tpcafeskanderbardaoui.mapper.IAdresseMapper;
 import tn.esprit.spring.tpcafeskanderbardaoui.repositories.AdresseRepository;
+import tn.esprit.spring.tpcafeskanderbardaoui.repositories.ClientRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +20,7 @@ public class AdresseService implements IAdresseService {
 
     private final AdresseRepository adresseRepo;
     private final IAdresseMapper adresseMapper;
+    private final ClientRepository clientRepo;
 
     @Override
     public AdresseResponse addAdresse(AdresseRequest request) {
@@ -193,5 +197,20 @@ public class AdresseService implements IAdresseService {
                 .stream().map(adresseMapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+
+    @Override
+    public Client ajouterClientEtAdresse(Client client, Adresse adresse) {
+        // Associer l'adresse au client
+        client.setAdresse(adresse);
+
+        // Optionnel si relation bidirectionnelle
+        adresse.setClients(client);
+
+        // Sauvegarder le client (l'adresse sera sauvegardée automatiquement)
+        return clientRepo.save(client);
+    }
+
+
 
 }

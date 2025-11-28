@@ -15,6 +15,5 @@ public class ClientResponce {
     private String nom;
     private String prenom;
     private LocalDate dateNaissance;
-    private Integer ptsAccumules;
-    private CarteFideliteRequest carteFidelite;  // ✅ Use DTO instead of entity
+    private CarteFideliteRequest carte;  // ✅ Use DTO instead of entity
 }

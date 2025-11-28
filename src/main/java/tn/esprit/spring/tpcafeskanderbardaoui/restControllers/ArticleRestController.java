@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleResponse;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.TypeArticle;
 import tn.esprit.spring.tpcafeskanderbardaoui.services.Article.IArticleService;
 
@@ -202,4 +203,20 @@ public class ArticleRestController {
         articleService.desaffecterPromotionDUnArticle(idArticle, idPromo);
         return ResponseEntity.ok("Promotion désaffectée de l'article avec succès");
     }
+
+    @PostMapping("/add-with-promotions")
+    public ResponseEntity<Article> ajouterArticleEtPromotions(@RequestBody Article article) {
+        Article savedArticle = articleService.ajouterArticleEtPromotions(article);
+        return ResponseEntity.ok(savedArticle);
+    }
+
+
+    @DeleteMapping("/delete-article-with-promotions/{idArticle}")
+    public ResponseEntity<String> deleteArticleWithPromotions(@PathVariable Long idArticle) {
+
+        articleService.deleteArticleAndPromotions(idArticle);
+
+        return ResponseEntity.ok("Article et promotions supprimés avec succès");
+    }
+
 }

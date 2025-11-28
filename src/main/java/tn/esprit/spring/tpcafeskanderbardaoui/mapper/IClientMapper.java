@@ -11,14 +11,10 @@ import tn.esprit.spring.tpcafeskanderbardaoui.entities.CarteFidelite;
 @Mapper(componentModel = "spring")
 public interface IClientMapper {
 
+    @Mapping(source = "carte.pointsAcumules", target = "carteFidelite.pointsAcumules") // ✅ map client.card → entity.card
     Client toEntity(ClientRequest request);
 
-    @Mapping(source = "carteFidelite.pointsAcumules", target = "ptsAccumules")
+    @Mapping(source = "carteFidelite.pointsAcumules", target = "carte.pointsAcumules") // ✅ map entity.card → DTO.card
+    @Mapping(source = "carteFidelite.dateCreation", target = "carte.dateCreation")
     ClientResponce toResponse(Client client);
-
-    // ✅ Add this method to map CarteFidelite entity to CarteFideliteRequest DTO
-    CarteFideliteRequest toCarteFideliteRequest(CarteFidelite carteFidelite);
-
-    // ✅ Add this method to map CarteFideliteRequest DTO to CarteFidelite entity
-    CarteFidelite toCarteFideliteEntity(CarteFideliteRequest carteFideliteRequest);
 }

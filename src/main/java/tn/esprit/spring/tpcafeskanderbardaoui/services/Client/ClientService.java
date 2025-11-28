@@ -317,22 +317,27 @@ public class ClientService implements IClientService {
 
     @Override
     public ClientResponce ajouterClientEtCarteFidelite(ClientRequest request) {
+
+        // 1️⃣ Convert and save the client
         Client client = clientMapper.toEntity(request);
+        Client savedClient = clientRepo.save(client);
 
-        CarteFidelite carte = CarteFidelite.builder()
-                .pointsAcumules(0)
-                .dateCreation(LocalDate.now())
-                .build();
+        // 2️⃣ Map request card into entity
+        CarteFidelite card = new CarteFidelite();
+        card.setPointsAcumules(request.getCarte().getPointsAcumules());  // ✅ take value from request
+        card.setDateCreation(request.getCarte().getDateCreation());      // ✅ take value from request
+        card.setClient(savedClient);  // link to client
 
-        // Set both sides of the relationship
-        carte.setClient(client);
-        client.setCarteFidelite(carte);
+        // 3️⃣ Save the card
+        carteRepo.save(card);
 
-        // Save client (cascade will save carte)
-        clientRepo.save(client);
+        // 4️⃣ Set it back to client if you need cascade link
+        savedClient.setCarteFidelite(card);
 
-        return clientMapper.toResponse(client);
+        // 5️⃣ Return response DTO
+        return clientMapper.toResponse(savedClient);
     }
+
 
 
     @Override
@@ -347,6 +352,24 @@ public class ClientService implements IClientService {
         commande.setClient(client);
         // 3️⃣ Save the commande
         commandeRepository.save(commande);
+    }
+
+    @Transactional
+    @Override
+    public void deleteClientAndCard(Long idClient) {
+
+        Client client = clientRepo.findById(idClient)
+                .orElseThrow(() -> new RuntimeException("Client introuvable"));
+
+        CarteFidelite carte = client.getCarteFidelite();
+
+        if (carte != null) {
+            carte.setClient(null);
+            client.setCarteFidelite(null);
+            carteRepo.delete(carte); // ✅ delete card with correct repo
+        }
+
+        clientRepo.delete(client); // ✅ delete client with client repo
     }
 
 

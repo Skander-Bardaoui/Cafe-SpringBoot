@@ -2,6 +2,7 @@ package tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO;
 
 import lombok.*;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.AdresseDTO.AdresseRequest;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.CarteFidelite;
 
 import java.time.LocalDate;
 
@@ -13,5 +14,7 @@ import java.time.LocalDate;
 public class ClientRequest {
     private String nom;
     private String prenom;
+    private CarteFidelite carte;
+
 
 }

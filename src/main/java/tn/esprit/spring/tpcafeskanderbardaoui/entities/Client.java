@@ -1,5 +1,6 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -27,8 +28,9 @@ public class Client {
     private LocalDate dateNaissance;
 
     // Adresse association
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adresse_id")
+    @JsonBackReference
     private Adresse adresse;
 
     // CarteFidelite association with cascade

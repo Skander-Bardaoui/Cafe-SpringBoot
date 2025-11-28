@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO.ClientRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO.ClientResponce;
+import tn.esprit.spring.tpcafeskanderbardaoui.entities.Client;
 import tn.esprit.spring.tpcafeskanderbardaoui.services.Client.IClientService;
 
 import java.time.LocalDate;
@@ -272,5 +273,14 @@ public class ClientRestController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+
+    @DeleteMapping("/delete-client-with-carte/{idClient}")
+    public ResponseEntity<String> deleteClientWithCarte(@PathVariable Long idClient) {
+
+        clientService.deleteClientAndCard(idClient);
+
+        return ResponseEntity.ok("Client et carte fidélité supprimés avec succès");
     }
 }
