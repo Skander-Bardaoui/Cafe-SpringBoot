@@ -1,6 +1,8 @@
 package tn.esprit.spring.tpcafeskanderbardaoui.services.Client;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ClientDTO.ClientRequest;
@@ -20,6 +22,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -370,6 +373,39 @@ public class ClientService implements IClientService {
         }
 
         clientRepo.delete(client); // ✅ delete client with client repo
+    }
+
+
+
+    // Runs every day at midnight
+    @Override
+    @Scheduled(cron = "0 0 0 * * *") // every day at midnight
+    public void incrementFidelityPointsOnBirthday() {
+
+        LocalDate today = LocalDate.now();
+        int month = today.getMonthValue();
+        int day = today.getDayOfMonth();
+
+        // Only fetch clients whose birthday is today
+        List<Client> birthdayClients = clientRepo.findClientsByBirthday(month, day);
+
+        for (Client client : birthdayClients) {
+            CarteFidelite carte = client.getCarteFidelite();
+            if (carte == null) {
+                log.warn("Client {} has no loyalty card, skipping.", client.getNom());
+                continue;
+            }
+
+            int oldPoints = carte.getPointsAcumules();
+            int bonus = (int) (oldPoints * 0.10); // +10%
+            carte.setPointsAcumules(oldPoints + bonus);
+            carteRepo.save(carte);
+
+            log.info("🎉 Birthday bonus applied to client {} {} → Old: {}, New: {}",
+                    client.getNom(), client.getPrenom(), oldPoints, oldPoints + bonus);
+        }
+
+        log.info("Birthday loyalty points update completed. {} clients processed.", birthdayClients.size());
     }
 
 

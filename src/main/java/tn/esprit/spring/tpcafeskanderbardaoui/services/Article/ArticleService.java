@@ -2,6 +2,8 @@ package tn.esprit.spring.tpcafeskanderbardaoui.services.Article;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleResponse;
@@ -12,11 +14,14 @@ import tn.esprit.spring.tpcafeskanderbardaoui.mapper.IArticleMapper;
 import tn.esprit.spring.tpcafeskanderbardaoui.repositories.ArticleRepository;
 import tn.esprit.spring.tpcafeskanderbardaoui.repositories.PromotionRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -281,5 +286,33 @@ public class ArticleService implements IArticleService {
 
         articleRepo.delete(article);
     }
+
+    @Override
+    @Scheduled(cron = "0 0 0 1 * *") // 0h00, le 1er de chaque mois
+    public List<ArticleResponse> getArticlesWithPromotionThisMonth(int month, int year) {
+        // Si le scheduler appelle la méthode sans paramètres, on utilise le mois et l'année actuels
+        if (month == 0 || year == 0) {
+            LocalDate today = LocalDate.now();
+            month = today.getMonthValue();
+            year = today.getYear();
+        }
+
+        List<ArticleResponse> articles = articleRepo.findArticlesWithPromotionInCurrentMonth(month, year)
+                .stream()
+                .map(articleMapper::toResponse)
+                .collect(Collectors.toList());
+
+        // Log des articles
+        if (articles.isEmpty()) {
+            log.info("📦 Pas d'articles en promotion ce mois-ci.");
+        } else {
+            log.info("📦 Articles en promotion pour {}-{}:", month, year);
+            articles.forEach(a -> log.info("- {} (Prix: {})", a.getNomArticle(), a.getPrixArticle()));
+        }
+
+        return articles;
+    }
+
+
 
 }

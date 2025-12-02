@@ -9,7 +9,7 @@ import tn.esprit.spring.tpcafeskanderbardaoui.entities.TypeArticle;
 import java.util.List;
 import java.util.Optional;
 
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+public interface    ArticleRepository extends JpaRepository<Article, Long> {
 
     // 1. Trouver les articles par nom exact
     @Query("SELECT a FROM Article a WHERE a.nomArticle = :nom")
@@ -83,4 +83,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
             @Param("minPrix") Double minPrix,
             @Param("maxPrix") Double maxPrix
     );
+
+    @Query("SELECT DISTINCT a FROM Article a JOIN a.promotions p " +
+            "WHERE (MONTH(p.dateDebutPromo) = :currentMonth OR MONTH(p.dateFinPromo) = :currentMonth) " +
+            "AND (YEAR(p.dateDebutPromo) = :currentYear OR YEAR(p.dateFinPromo) = :currentYear)")
+    List<Article> findArticlesWithPromotionInCurrentMonth(@Param("currentMonth") int currentMonth,
+                                                          @Param("currentYear") int currentYear);
+
 }

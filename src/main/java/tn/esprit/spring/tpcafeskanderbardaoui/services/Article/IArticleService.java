@@ -86,6 +86,7 @@ public interface IArticleService {
     void desaffecterPromotionDUnArticle(long idArticle, long idPromo);
     Article ajouterArticleEtPromotions(Article article);
     void deleteArticleAndPromotions(Long idArticle);
+    List<ArticleResponse> getArticlesWithPromotionThisMonth(int month, int year);
 
 
 

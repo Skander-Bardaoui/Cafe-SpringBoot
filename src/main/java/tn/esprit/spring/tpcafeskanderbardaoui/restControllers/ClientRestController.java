@@ -283,4 +283,11 @@ public class ClientRestController {
 
         return ResponseEntity.ok("Client et carte fidélité supprimés avec succès");
     }
+
+    @GetMapping("/test/birthday")
+    public String testBirthdayPoints() {
+        clientService.incrementFidelityPointsOnBirthday();
+        return "Birthday points increment executed manually!";
+    }
+
 }

@@ -100,6 +100,8 @@ public interface IClientService {
     void ajouteCommandeEtAffecterAClient(Commande commande, String nomClient, String prenomClient);
 
     void deleteClientAndCard(Long idClient);
+    void incrementFidelityPointsOnBirthday();
+
 
 
 

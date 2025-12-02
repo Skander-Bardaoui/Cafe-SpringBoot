@@ -8,9 +8,13 @@ import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleRequest;
 import tn.esprit.spring.tpcafeskanderbardaoui.dto.ArticleDTO.ArticleResponse;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.Article;
 import tn.esprit.spring.tpcafeskanderbardaoui.entities.TypeArticle;
+import tn.esprit.spring.tpcafeskanderbardaoui.mapper.IArticleMapper;
+import tn.esprit.spring.tpcafeskanderbardaoui.repositories.ArticleRepository;
 import tn.esprit.spring.tpcafeskanderbardaoui.services.Article.IArticleService;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +22,8 @@ import java.util.List;
 public class ArticleRestController {
 
     private final IArticleService articleService;
+    private final ArticleRepository articleRepo;
+    private final IArticleMapper articleMapper;
 
     // =============================
     //        CRUD ENDPOINTS
@@ -217,6 +223,16 @@ public class ArticleRestController {
         articleService.deleteArticleAndPromotions(idArticle);
 
         return ResponseEntity.ok("Article et promotions supprimés avec succès");
+    }
+
+
+    @GetMapping("/promotions/current-month")
+    public List<ArticleResponse> getArticlesWithPromotionThisMonth() {
+        LocalDate today = LocalDate.now();
+        int currentMonth = today.getMonthValue();
+        int currentYear = today.getYear();
+
+        return articleService.getArticlesWithPromotionThisMonth(currentMonth, currentYear);
     }
 
 }

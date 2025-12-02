@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class ClientRequest {
     private String nom;
     private String prenom;
+    private LocalDate dateNaissance;
     private CarteFidelite carte;
 
 

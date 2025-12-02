@@ -105,4 +105,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c WHERE c.nom = :nom AND c.prenom = :prenom")
     List<Client> findAllByNomAndPrenom(@Param("nom") String nom, @Param("prenom") String prenom);
 
+    @Query("SELECT c FROM Client c WHERE FUNCTION('MONTH', c.dateNaissance) = :month AND FUNCTION('DAY', c.dateNaissance) = :day")
+    List<Client> findClientsByBirthday(int month, int day);
+
 }
