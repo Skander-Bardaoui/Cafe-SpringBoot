@@ -379,33 +379,28 @@ public class ClientService implements IClientService {
 
     // Runs every day at midnight
     @Override
-    @Scheduled(cron = "0 0 0 * * *") // every day at midnight
+    @Scheduled(cron = "0 0 0 * * *") // Every day at midnight
     public void incrementFidelityPointsOnBirthday() {
 
         LocalDate today = LocalDate.now();
-        int month = today.getMonthValue();
-        int day = today.getDayOfMonth();
 
-        // Only fetch clients whose birthday is today
-        List<Client> birthdayClients = clientRepo.findClientsByBirthday(month, day);
+        List<Client> clients = clientRepo.findClientsByBirthday(
+                today.getMonthValue(),
+                today.getDayOfMonth()
+        );
 
-        for (Client client : birthdayClients) {
+        for (Client client : clients) {
             CarteFidelite carte = client.getCarteFidelite();
+
             if (carte == null) {
-                log.warn("Client {} has no loyalty card, skipping.", client.getNom());
                 continue;
             }
 
-            int oldPoints = carte.getPointsAcumules();
-            int bonus = (int) (oldPoints * 0.10); // +10%
-            carte.setPointsAcumules(oldPoints + bonus);
+            int points = carte.getPointsAcumules();
+            carte.setPointsAcumules(points + (points / 10)); // +10%
+
             carteRepo.save(carte);
-
-            log.info("🎉 Birthday bonus applied to client {} {} → Old: {}, New: {}",
-                    client.getNom(), client.getPrenom(), oldPoints, oldPoints + bonus);
         }
-
-        log.info("Birthday loyalty points update completed. {} clients processed.", birthdayClients.size());
     }
 
 

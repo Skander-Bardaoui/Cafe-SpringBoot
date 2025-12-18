@@ -12,7 +12,8 @@ import org.springframework.stereotype.Component;
 
 public class ScheduledMethods {
 
-   /* @Scheduled(fixedRate = 2000)
+
+    @Scheduled(fixedRate = 2000)
     public void method1(){
         log.info("Executing method1");
 
@@ -22,5 +23,5 @@ public class ScheduledMethods {
     public void method2(){
         log.info("Executing method1");
 
-    }*/
+    }
 }

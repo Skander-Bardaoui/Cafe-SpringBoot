@@ -288,30 +288,24 @@ public class ArticleService implements IArticleService {
     }
 
     @Override
-    @Scheduled(cron = "0 0 0 1 * *") // 0h00, le 1er de chaque mois
     public List<ArticleResponse> getArticlesWithPromotionThisMonth(int month, int year) {
-        // Si le scheduler appelle la méthode sans paramètres, on utilise le mois et l'année actuels
-        if (month == 0 || year == 0) {
-            LocalDate today = LocalDate.now();
-            month = today.getMonthValue();
-            year = today.getYear();
-        }
 
-        List<ArticleResponse> articles = articleRepo.findArticlesWithPromotionInCurrentMonth(month, year)
+        List<ArticleResponse> articles = articleRepo
+                .findArticlesWithPromotionInCurrentMonth(month, year)
                 .stream()
                 .map(articleMapper::toResponse)
                 .collect(Collectors.toList());
 
-        // Log des articles
         if (articles.isEmpty()) {
-            log.info("📦 Pas d'articles en promotion ce mois-ci.");
+            log.info("📦 Aucun article en promotion pour {}-{}", month, year);
         } else {
-            log.info("📦 Articles en promotion pour {}-{}:", month, year);
-            articles.forEach(a -> log.info("- {} (Prix: {})", a.getNomArticle(), a.getPrixArticle()));
+            log.info("📦 {} article(s) en promotion pour {}-{}", articles.size(), month, year);
         }
 
         return articles;
     }
+
+
 
 
 

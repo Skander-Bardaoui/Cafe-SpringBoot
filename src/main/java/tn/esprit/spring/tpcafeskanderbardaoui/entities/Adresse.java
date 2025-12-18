@@ -3,6 +3,7 @@ package tn.esprit.spring.tpcafeskanderbardaoui.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
@@ -15,15 +16,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Adresse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idAdresse;
+    Long idAdresse;
 
-    private String rue;
+    String rue;
 
-    private String ville;
+    String ville;
 
     private int codePostal;
 
