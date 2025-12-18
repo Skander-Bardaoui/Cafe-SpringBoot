@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "DOCKER_IMAGE = "bardaoui/my-java-app:latest""
+        DOCKER_IMAGE = "bardaoui/my-java-app:latest"
         MINIKUBE_IP = "192.168.49.2"
         SONAR_PROJECT_KEY = "my-java-app"
         SONAR_HOST_URL = "http://localhost:9000"
